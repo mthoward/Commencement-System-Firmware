@@ -5,8 +5,8 @@ import os
 ### Constants
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
-CHANNELS = 2
-RATE = 44100   #176400
+CHANNELS = 1
+RATE = 176400
 RECORD_SECONDS = 3
 
 
@@ -25,10 +25,11 @@ def record_wav_file(UBIT_name):
    
    ## Create Frames Array
    frames = []
+   
    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-       data = stream.read(CHUNK)
-       frames.append(data)
-
+      data = stream.read(CHUNK)
+      frames.append(data)
+      
    stream.stop_stream()
    stream.close()
    p.terminate()
@@ -40,7 +41,7 @@ def record_wav_file(UBIT_name):
    wf.setframerate(RATE)
    wf.writeframes(b''.join(frames))
    wf.close()
-
+      
    
 ## Play 'UBIT_name.WAV'
 def play_wav_file(file):

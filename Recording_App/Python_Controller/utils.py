@@ -18,6 +18,6 @@ def install_packages(package_file):
  
  
 def check_file_exists(filename):
-   filename = os.path.join(os.getcwd(),"../Recordings")
-   filename = os.path.normpath(filename)
-   return os.path.exists(filename)
+   filepath = os.path.join(os.getcwd(),"../Recordings/"+filename)
+   filepath = os.path.normpath(filepath)
+   return os.path.exists(filepath)
