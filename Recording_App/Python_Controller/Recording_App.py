@@ -6,10 +6,10 @@ from utils import *
 if __name__ == "__main__":
  
    ### Install necessary packages ###
-   install_packages("sound_packages.txt")
+   #install_packages("sound_packages.txt")
    
    ### Create Subfolder To Hold Recordings
-   create_subfolder("Recordings")
+   create_subfolder("../Recordings")
    app = Recording_Window(None)
    app.title('UB Commencement Recording App')
    

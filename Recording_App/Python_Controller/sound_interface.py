@@ -6,13 +6,14 @@ import os
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
-RATE = 176400
+RATE = 44100   #176400
 RECORD_SECONDS = 3
 
 
 ## Record WAV file to UBIT_name.WAV
 def record_wav_file(UBIT_name):  
-   WAVE_OUTPUT_FILENAME = "../Recordings/"+str(UBIT_name) + ".wav"
+   WAVE_OUTPUT_FILENAME = os.path.join(os.getcwd(), "../Recordings/" + str(UBIT_name) + ".wav")
+   WAVE_OUTPUT_FILENAME = os.path.normpath(WAVE_OUTPUT_FILENAME)
    
    ## Create PyAudio Object
    p = pyaudio.PyAudio()
@@ -44,9 +45,8 @@ def record_wav_file(UBIT_name):
 ## Play 'UBIT_name.WAV'
 def play_wav_file(file):
    ## Open Filename
-   filename = os.path.dirname(os.getcwd())
-   filename = filename  + "\Recordings\\" + file
-   print filename
+   filename = os.path.join(os.getcwd(), "../Recordings/" + file)
+   filename = os.path.normpath(filename)
    wf = wave.open(filename, 'rb')
    
    ## Create PyAudio Object
