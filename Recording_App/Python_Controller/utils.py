@@ -10,13 +10,14 @@ def create_subfolder(folderName):
          print "Error"
          raise
 
-         
+
 def install_packages(package_file):
    packages = open(package_file)
    for package in packages:
       os.system(package)
- 
- 
+
+
 def check_file_exists(filename):
-   filename = os.path.dirname(os.getcwd()) + "\Recordings\\" + filename
+   filename = os.path.dirname(os.getcwd()) + "/Recordings/" + filename
+   print filename
    return os.path.exists(filename)
