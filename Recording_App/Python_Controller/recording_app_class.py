@@ -136,6 +136,7 @@ class Recording_Window(Tkinter.Tk):
       self.buttonVariable.set("Recording")
       self.barVariable.set(0)
       self.update()
+      
       self.thread2 = threading.Thread(target=self.progress_bar_updater)
       self.thread2.start()
 

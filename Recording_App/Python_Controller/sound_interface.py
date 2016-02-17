@@ -5,7 +5,7 @@ import os
 ### Constants
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
-CHANNELS = 1
+CHANNELS = 2
 RATE = 176400
 RECORD_SECONDS = 3
 
