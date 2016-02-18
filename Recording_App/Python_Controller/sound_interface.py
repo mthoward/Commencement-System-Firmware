@@ -15,6 +15,7 @@ def record_wav_file(UBIT_name):
    WAVE_OUTPUT_FILENAME = os.path.join(os.getcwd(), "../Recordings/" + str(UBIT_name) + ".wav")
    WAVE_OUTPUT_FILENAME = os.path.normpath(WAVE_OUTPUT_FILENAME)
    
+
    ## Create PyAudio Object
    p = pyaudio.PyAudio()
    stream = p.open(format=FORMAT,
@@ -22,7 +23,7 @@ def record_wav_file(UBIT_name):
                    rate=RATE,
                    input=True,
                    frames_per_buffer=CHUNK)
-   
+
    ## Create Frames Array
    frames = []
    
@@ -41,6 +42,7 @@ def record_wav_file(UBIT_name):
    wf.setframerate(RATE)
    wf.writeframes(b''.join(frames))
    wf.close()
+
       
    
 ## Play 'UBIT_name.WAV'
@@ -48,8 +50,9 @@ def play_wav_file(file):
    ## Open Filename
    filename = os.path.join(os.getcwd(), "../Recordings/" + file)
    filename = os.path.normpath(filename)
+
    wf = wave.open(filename, 'rb')
-   
+
    ## Create PyAudio Object
    p = pyaudio.PyAudio()
    stream = p.open(format = p.get_format_from_width(wf.getsampwidth()),

@@ -97,6 +97,7 @@ class Recording_Window(Tkinter.Tk):
                       sticky='EW')
       self.entryString.set("")
 
+
       ### Record Button
       self.rec_image = Tkinter.PhotoImage(file="record_button.gif")
       self.buttonVariable = Tkinter.StringVar()
@@ -106,6 +107,7 @@ class Recording_Window(Tkinter.Tk):
                               command=self.RecordPressed,
                               bg="gray",
                               fg="red")
+
       self.button.config(image=self.rec_image)
       self.button.grid(column=3, row=4)
 
@@ -151,6 +153,7 @@ class Recording_Window(Tkinter.Tk):
       self.thread2 = threading.Thread(target=self.progress_bar_updater)
       self.thread2.start()
 
+
       ## Record Name
       UBIT = self.entryString.get().rstrip('\n')
       if UBIT == "":
@@ -165,6 +168,7 @@ class Recording_Window(Tkinter.Tk):
          self.update()
          self.bar.stop()
          self.update()
+
 
       ## Refresh Button
       self.buttonVariable.set(" Record ")
@@ -183,7 +187,7 @@ class Recording_Window(Tkinter.Tk):
       elif not check_file_exists(UBIT + ".wav"):
          self.statusLabel.config(text="NO RECORDING for '" + UBIT +"'")
          self.update()
-      ## Playback
+      # Playback
       else:
          self.playbackVariable.set("Playing ")
          self.statusLabel.config(text="Playing: '" + UBIT + ".wav'")
