@@ -13,117 +13,128 @@ class Recording_Window(Tkinter.Tk):
       self.initialize()
 
    def initialize(self):
-      # Set Grid Layout, Non-resizable
+      ### Set Grid Layout, Non-resizable
       self.grid()
       self.resizable(False,False)
 
-      # Set Col Weights
-      self.columnconfigure(0,weight=1, minsize=100)
-      self.columnconfigure(1,weight=1)
-      self.columnconfigure(2,weight=1)
-      self.columnconfigure(3,weight=1)
-      self.columnconfigure(4,weight=1)
+      ### Set Col Weights
+      for x in range(0,5):
+         if x == 1:
+            self.columnconfigure(x,weight=1, minsize=80)
+         if x == 2:
+            self.columnconfigure(x,weight=0)
+         else:
+            self.columnconfigure(x,weight=1)
 
-      # Set Row Weights
-      for x in range(0,9):
+      ### Set Row Weights
+      for x in range(0,6):
          self.rowconfigure(x,weight=1)
 
-      # Set "Width x Height"
-      self.geometry('500x200')
+      ### Set "Width x Height"
+      self.geometry('400x200')
 
 
-      #### UBITListbox
+      ### UBIT Listbox
       self.UBITListbox = Listbox(self)
-      self.UBITListbox.grid(row=0, column=0,
-                        rowspan=9,
-                        padx=8,sticky='NSEW')
+      self.UBITListbox.grid(row=1, column=1,
+                        rowspan=6,
+                        columnspan=1,
+                        padx=8,
+                        pady=8,
+                        sticky='NSEW')
       self.UBITListbox.columnconfigure(0,weight=1)
-      for x in range(0,9):
+      for x in range(0,5):
          self.UBITListbox.rowconfigure(x,weight=1)
       
-
+      ### Status Listbox
       self.StatusListbox = Listbox(self)
-      self.StatusListbox.grid(row=0, column=1,
-                        rowspan=9,sticky='NSEW')
+      self.StatusListbox.grid(row=1,
+                              column=0,
+                              rowspan=9,
+                              pady=8,
+                              sticky='NSEW')
       self.StatusListbox.columnconfigure(0,weight=1)
-      for x in range(0,9):
+      for x in range(0,5):
          self.StatusListbox.rowconfigure(x,weight=1)
          
          
 
-      ### Scrollbar for UBITListbox
+      ### Scrollbar
       self.scrollbar = Scrollbar(self.UBITListbox,
                                  orient=VERTICAL,
                                  command=self.OnVsb)
       self.UBITListbox.config(yscrollcommand=self.scrollbar.set,
                               activestyle=NONE)
       self.StatusListbox.config(yscrollcommand=self.scrollbar.set,
-                                width=7,
+                                width=5,
                                 exportselection=0,
                                 activestyle=NONE)
-      self.scrollbar.grid(column=1, rowspan=9, sticky='NS')
+      self.scrollbar.grid(column=1, rowspan=6, sticky='NS')
       self.selection = self.UBITListbox.get(ACTIVE)
 
-      # Add '>>>' button
+      
+      ### '>>>' button
       self.listButtonVariable = Tkinter.StringVar()
       self.listButtonVariable.set(">>>")
       selButton = Tkinter.Button(self,
                                  textvariable=self.listButtonVariable,
                                  command=self.GetSelection)
-      selButton.grid(column=2, row=3, padx=8)
+      selButton.grid(column=2, row=1, rowspan=3, padx=8)
 
-      # Add Label Over Test Entry
-      self.label = Label(self, text="UBIT NAME")
-      self.label.grid(column=2, row=2, columnspan=2,padx=8)
+      
+      ### Label Over Test Entry
+      self.label = Label(self, text="Selected UBIT")
+      self.label.grid(column=3, row=1, columnspan=2,padx=8)
 
-      # Add Text Entry
+      ### Text Entry
       self.entryString = StringVar()
       self.entry = Tkinter.Entry(self, textvariable=self.entryString)
-      self.entry.grid(column=3, row=3,
-                      columnspan=2,
+      #self.entry.config(width=15)
+      self.entry.grid(column=3,
+                      row=2,
                       padx=8,
+                      columnspan=2,
                       sticky='EW')
       self.entryString.set("")
 
-      # Add record button
+      ### Record Button
+      self.rec_image = Tkinter.PhotoImage(file="record_button.gif")
       self.buttonVariable = Tkinter.StringVar()
       self.buttonVariable.set(" Record ")
-      button = Tkinter.Button(self,
+      self.button = Tkinter.Button(self,
                               textvariable=self.buttonVariable,
                               command=self.RecordPressed,
-                              bg="white",
+                              bg="gray",
                               fg="red")
-      button.grid(column=3, row=4, columnspan=1)
+      self.button.config(image=self.rec_image)
+      self.button.grid(column=3, row=4)
 
-      # Add Playback button
+      ### Playback button
+      self.play_image = Tkinter.PhotoImage(file="play_button.gif")
       self.playbackVariable = Tkinter.StringVar()
       self.playbackVariable.set("Playback")
-      button = Tkinter.Button(self,
+      self.playbutton = Tkinter.Button(self,
                               textvariable=self.playbackVariable,
                               command=self.PlaybackPressed,
-                              bg="white",
+                              bg="gray",
                               fg="blue")
-      button.grid(column=4, row=4, columnspan=1)
+      self.playbutton.config(image=self.play_image)
+      self.playbutton.grid(column=4, row=4)
 
-      # Add Label Under Buttons
+      # Add Labels Under Buttons
       self.statusLabel = Label(self, text='', fg="red")
-      self.statusLabel.grid(column=3, row=5,
-                             columnspan=2,padx=8)
+      self.statusLabel.grid(column=3, row=6,
+                            columnspan=2,padx=8)
+                             
+      self.recordLabel = Label(self, text='Record', fg="red")
+      self.recordLabel.grid(column=3, row=3,padx=8)
+      
+      self.playLabel = Label(self, text=' Play ', fg="blue")
+      self.playLabel.grid(column=4, row=3,padx=8)
       
       
       # Add Progressbar
-      self.barStyle = ttk.Style()
-      self.barStyle.theme_use('clam')
-      self.barStyle.configure("red.Horizontal.TProgressbar", foreground="red", background="red")
-      self.barVariable = Tkinter.IntVar()
-      self.bar = ttk.Progressbar(self,
-                                 orient=HORIZONTAL,
-                                 length=200,
-                                 mode='determinate',
-                                 maximum=30,
-                                 variable = self.barVariable,
-                                 style="red.Horizontal.TProgressbar")
-      self.bar.grid(column=3, row=7)
+      self.add_progress_bar(30,145,col=3,row=5)
       
    ## Returns the list selection
    def GetSelection(self):
@@ -213,3 +224,17 @@ class Recording_Window(Tkinter.Tk):
             self.StatusListbox.itemconfig(x, bg="green", fg="white")
             found = True
          x += 1
+   
+   def add_progress_bar(self, max, length, col, row):
+      self.barStyle = ttk.Style()
+      self.barStyle.theme_use('clam')
+      self.barStyle.configure("red.Horizontal.TProgressbar", foreground="red", background="red")
+      self.barVariable = Tkinter.IntVar()
+      self.bar = ttk.Progressbar(self,
+                                 orient=HORIZONTAL,
+                                 length=length,
+                                 mode='determinate',
+                                 maximum=max,
+                                 variable = self.barVariable,
+                                 style="red.Horizontal.TProgressbar")
+      self.bar.grid(column=col, row=row, columnspan=2,pady=8)
