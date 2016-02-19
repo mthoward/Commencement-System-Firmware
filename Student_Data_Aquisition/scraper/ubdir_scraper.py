@@ -1,16 +1,21 @@
+#!/usr/bin/python
 """ /Student_Data_Aquisition/scraper/ubdir_scraper.py
 Scraper for for getting UB students' UBIT names from http://www.buffalo.edu/directory/
 Feel free to ignore any "E1102 selector('<*>') is not callable" errors you might
     get with a Python linter. It's totally callable. It's a weird class in
-    general if you ask me, but it works
+    general if you ask me, but it works.
 """
 
 from lxml import html
 from lxml.cssselect import CSSSelector as selector
 import requests
 import os
-from time import sleep
+from time import sleep, time
 import json
+from pprint import PrettyPrinter
+
+startTime = time()
+pp = PrettyPrinter(indent=4)
 
 QUERY_URL = 'http://www.buffalo.edu/directory/search'
 QUERY_URL += "?query=%s"
@@ -71,36 +76,120 @@ def getFullQueryResults(query, qualifier='lastname'):
     resultCount = int(resultCountElement.text.split()[-1])
 
     # Get full list response
-    return getQueryPageTree(query,
-                            perpage=resultCount,
-                            qualifier=qualifier)
+    return getQueryPageTree(query, perpage=resultCount, qualifier=qualifier)
 
 
-def getUBIT(name, major):
+def dl2dict(dl):
     """
+    Returns a dict built from a `dl` object
     """
-    nameTokens = name.split()
-    studentInfo = {
-        'name': name,
+    if not isinstance(dl, html.HtmlElement) or dl.tag != 'dl':
+        raise TypeError("An xml.html.HtmlElement 'dl' object is required")
+    dllist = list(dl)
+    dlTextList = [element.text for element in dllist]
+    return dict([dlTextList[i:i+2] for i in xrange(0, len(dlTextList), 2)])
+
+
+def getUBIT(targetName, targetMajor):
+    """
+    Returns a dict of students' info, keyed by their UBIT name, based on name
+        and major criteria
+    This function makes the query request to UB Directory, parses the DOM tree,
+        and loops over the entries, filtering by major and name matching.
+    Not sure how reliable the returned data is, based on name matching. Some of
+        the names provided by the input file may not completely match the names
+        from the entries on the UB Directory, due to personal updates
+        introducing nicknames, spelling corrections, or other unpredictable
+        variations in name
+    It also returns all likely matches, instead of one sure match every time.
+        This is due to the fact that shared surnames might exist in the same
+        major.
+    If no viable match is discovered, an error is thrown to alert the calling
+        scope.
+    """
+    # Handle target information
+    nameTokens = targetName.split()
+    target = {
+        'name': targetName,
         'firstName': nameTokens[0],
-        'lastName': nameTokens[-1]
+        'lastName': nameTokens[-1],
+        'major': targetMajor,
+        'tokens': nameTokens
     }
 
-    queryResultsTree = getFullQueryResults(studentInfo['lastName'])
+    # Make list of `li` entries from UB directory query
+    queryResultsTree = getFullQueryResults(target['lastName'])
     entryList = selector('ul.content_list')(queryResultsTree)[0]
     entryListElements = entryList.findall('li')
 
-    matchingMajors = []
-    studentNames = []
-    for element in entryListElements:
-        # student = {}
-        studentName = element.find('h3').find('a').text.strip()
-        # student['name'] = studentName
-        studentNames.append(studentName)
-    print sum(1 for studentName in studentNames if studentName.split()[0] == studentInfo['firstName'])
+    # Loop over `li`s and check each entry for match with target info
+    candidates = {}
+    for liElement in entryListElements:
+        # Get the 'item_info' `dl` from the entry and turn it into a dict for
+        #   easy access
+        descriptionListElement = selector('dl.item_info')(liElement)[0]
+        candidate = dl2dict(descriptionListElement)
+        # Add their name
+        candidateName = liElement.find('h3').find('a').text.strip()
+        candidate['Name'] = candidateName
+        # Add their UBIT
+        queryPart = liElement.find('h3').find('a').get('href').split('/')[-1]
+        candidateUBIT = queryPart.split('&')[0].split('?')[0]
+        candidate['UBIT'] = candidateUBIT
+        # Update their email
+        candidate['Email'] = candidateUBIT + '@buffalo.edu'
 
+        # Ignore candidates not belonging to the right department
+        if target['major'].lower() != candidate['Department'].lower():
+            continue
+        # ...and those whose last name does not exist in their entry name
+        if not target['lastName'].lower() in candidate['Name'].lower():
+            continue
+        # # ...same as above, but for first name
+        # if not target['firstName'].lower() in candidate['Name'].lower():
+        #     continue
+
+        # Candidate made it through tests, add them
+        candidates[candidateUBIT] = candidate
+
+    if not candidates:
+        raise KeyError("No viable candidates found for %s" % targetName)
+    else:
+        return candidates
+
+
+
+"""
+Scripting Loop
+"""
 inFileName = os.path.join(os.getcwd(), 'UB_CEN_Seniors.txt')
+students = {}
+unfoundStudents = []
+queriedLastNames = set()
 with open(inFileName) as inFile:
     for line in inFile:
-        getUBIT(line, "Computer Engineering")
+        name = line.replace('\n', '')
+        lastName = name.split()[-1]
+        if lastName in queriedLastNames:
+            print "%s's last name (%s) has been queried, skip" % (name, lastName)
+            continue
+        queriedLastNames.add(lastName)
+        print '\n\n' + name + ':'
+        try:
+            matches = getUBIT(name, 'Computer Engineering')
+            students.update(matches)
+            pp.pprint(matches)
+        except KeyError as e:
+            print e
+            print "Adding %s to unfound students list" % name
+            unfoundStudents.append(name)
         sleep(SLEEP_TIME)
+
+print 'Students not found:'
+pp.pprint(unfoundStudents)
+
+outFileName = os.path.join(os.getcwd(), 'UB_CEN_Info.json')
+with open(outFileName, 'w') as outFile:
+    json.dump(students, outFile)
+
+print "Elapsed time: %s" % (time() - startTime)
