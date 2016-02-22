@@ -1,30 +1,32 @@
 #!/usr/bin/python
 """ /Student_Data_Aquisition/scraper/ubdir_scraper.py
-Scraper for for getting UB students' UBIT names from http://www.buffalo.edu/directory/
+Scraper for for getting UB students' UBIT names from
+    http://www.buffalo.edu/directory/
 Feel free to ignore any "E1102 selector('<*>') is not callable" errors you might
     get with a Python linter. It's totally callable. It's a weird class in
     general if you ask me, but it works.
 """
 
+from time import sleep, time
 from lxml import html
 from lxml.cssselect import CSSSelector as selector
-import requests
 import os
-from time import sleep, time
-import json
 from pprint import PrettyPrinter
+import json
 
-startTime = time()
-pp = PrettyPrinter(indent=4)
+import requests
 
-QUERY_URL = 'http://www.buffalo.edu/directory/search'
+START_TIME = time()
+SLEEP_TIME = 2
+PP = PrettyPrinter(indent=4)
+
+QUERY_URL = "http://www.buffalo.edu/directory/search"
 QUERY_URL += "?query=%s"
 QUERY_URL += "&affiliation=%s"
 QUERY_URL += "&qualifier=%s"
 QUERY_URL += "&perpage=%i"
 QUERY_URL += "&start=0"
 
-SLEEP_TIME = 2
 
 def getQueryPageTree(query, perpage=1, affiliation='student', qualifier='lastname'):
     """
@@ -85,8 +87,7 @@ def dl2dict(dl):
     """
     if not isinstance(dl, html.HtmlElement) or dl.tag != 'dl':
         raise TypeError("An xml.html.HtmlElement 'dl' object is required")
-    dllist = list(dl)
-    dlTextList = [element.text for element in dllist]
+    dlTextList = [element.text for element in list(dl)]
     return dict([dlTextList[i:i+2] for i in xrange(0, len(dlTextList), 2)])
 
 
@@ -171,14 +172,15 @@ with open(inFileName) as inFile:
         name = line.replace('\n', '')
         lastName = name.split()[-1]
         if lastName in queriedLastNames:
-            print "%s's last name (%s) has been queried, skip" % (name, lastName)
+            print "%s's last name (%s) has been queried, skip" \
+                % (name, lastName)
             continue
         queriedLastNames.add(lastName)
         print '\n\n' + name + ':'
         try:
             matches = getUBIT(name, 'Computer Engineering')
             students.update(matches)
-            pp.pprint(matches)
+            PP.pprint(matches)
         except KeyError as e:
             print e
             print "Adding %s to unfound students list" % name
@@ -186,10 +188,10 @@ with open(inFileName) as inFile:
         sleep(SLEEP_TIME)
 
 print 'Students not found:'
-pp.pprint(unfoundStudents)
+PP.pprint(unfoundStudents)
 
 outFileName = os.path.join(os.getcwd(), 'UB_CEN_Info.json')
 with open(outFileName, 'w') as outFile:
     json.dump(students, outFile)
 
-print "Elapsed time: %s" % (time() - startTime)
+print "Elapsed time: %s" % (time() - START_TIME)
