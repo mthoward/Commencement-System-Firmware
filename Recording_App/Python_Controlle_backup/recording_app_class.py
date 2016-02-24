@@ -13,6 +13,7 @@ class Recording_Window(Tkinter.Tk):
       self.initialize()
 
    def initialize(self):
+<<<<<<< HEAD
       ### Set Grid Layout, Non-resizable
       self.grid()
       self.resizable(False,False)
@@ -87,6 +88,55 @@ class Recording_Window(Tkinter.Tk):
       self.label.grid(column=3, row=1, columnspan=2,padx=8)
 
       ### Text Entry
+=======
+      # Set Grid Layout, Non-resizable
+      self.grid()
+      self.resizable(False,False)
+
+      # Set Col Weights
+      self.columnconfigure(0,weight=2)
+      self.columnconfigure(1,weight=0)
+      self.columnconfigure(2,weight=1)
+      self.columnconfigure(3,weight=1)
+
+      # Set Row Weights
+      for x in range(0,9):
+         self.rowconfigure(x,weight=1)
+
+      # Set "Width x Height"
+      self.geometry('400x200')
+
+
+      #### Listbox
+      self.listbox = Listbox(self)
+      self.listbox.grid(row=0, column=0,
+                        rowspan=9, columnspan=1,
+                        padx=8,sticky='NSEW')
+      self.listbox.columnconfigure(0,weight=1)
+      for x in range(0,9):
+         self.listbox.rowconfigure(x,weight=1)
+
+      ### Scrollbar for Listbox
+      self.scrollbar = Scrollbar(self.listbox, orient=VERTICAL)
+      self.listbox.config(yscrollcommand=self.scrollbar.set)
+      self.scrollbar.config(command=self.listbox.yview)
+      self.scrollbar.grid(column=1, rowspan=9, sticky='NS')
+      self.selection = self.listbox.get(ACTIVE)
+
+      # Add '>>>' button
+      self.listButtonVariable = Tkinter.StringVar()
+      self.listButtonVariable.set(">>>")
+      selButton = Tkinter.Button(self,
+                              textvariable=self.listButtonVariable,
+                              command=self.GetSelection)
+      selButton.grid(column=1, row=3, padx=8)
+
+      # Add Label Over Test Entry
+      self.label = Label(self, text="UBIT NAME")
+      self.label.grid(column=2, row=2, columnspan=2,padx=8)
+
+      # Add Text Entry
+>>>>>>> refs/remotes/origin/dev_andy
       self.entryString = StringVar()
       self.entry = Tkinter.Entry(self, textvariable=self.entryString)
       #self.entry.config(width=15)
@@ -97,9 +147,12 @@ class Recording_Window(Tkinter.Tk):
                       sticky='EW')
       self.entryString.set("")
 
-
+<<<<<<< HEAD
       ### Record Button
       self.rec_image = Tkinter.PhotoImage(file="record_button.gif")
+=======
+      # Add record button
+>>>>>>> refs/remotes/origin/dev_andy
       self.buttonVariable = Tkinter.StringVar()
       self.buttonVariable.set(" Record ")
       self.button = Tkinter.Button(self,
@@ -107,12 +160,17 @@ class Recording_Window(Tkinter.Tk):
                               command=self.RecordPressed,
                               bg="gray",
                               fg="red")
-
+<<<<<<< HEAD
       self.button.config(image=self.rec_image)
       self.button.grid(column=3, row=4)
 
       ### Playback button
       self.play_image = Tkinter.PhotoImage(file="play_button.gif")
+=======
+      button.grid(column=2, row=4, columnspan=1)
+
+      # Add Playback button
+>>>>>>> refs/remotes/origin/dev_andy
       self.playbackVariable = Tkinter.StringVar()
       self.playbackVariable.set("Playback")
       self.playbutton = Tkinter.Button(self,
@@ -125,6 +183,7 @@ class Recording_Window(Tkinter.Tk):
 
       # Add Labels Under Buttons
       self.statusLabel = Label(self, text='', fg="red")
+<<<<<<< HEAD
       self.statusLabel.grid(column=3, row=6,
                             columnspan=2,padx=8)
                              
@@ -138,21 +197,32 @@ class Recording_Window(Tkinter.Tk):
       # Add Progressbar
       self.add_progress_bar(30,145,col=3,row=5)
       
+=======
+      self.statusLabel.grid(column=2, row=5,
+                             columnspan=2,padx=8)
+
+>>>>>>> refs/remotes/origin/dev_andy
    ## Returns the list selection
    def GetSelection(self):
       self.entryString.set(self.UBITListbox.get(ACTIVE))
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/dev_andy
    ## Called when the Record button is pressed
    def RecordPressed(self):
       ## Change Button
       self.buttonVariable.set("Recording")
       self.barVariable.set(0)
       self.update()
+<<<<<<< HEAD
       
-      #self.thread2 = threading.Thread(target=self.progress_bar_updater)
-      #self.thread2.start()
-
+      self.thread2 = threading.Thread(target=self.progress_bar_updater)
+      self.thread2.start()
+=======
+>>>>>>> refs/remotes/origin/dev_andy
 
       ## Record Name
       UBIT = self.entryString.get().rstrip('\n')
@@ -166,9 +236,11 @@ class Recording_Window(Tkinter.Tk):
          self.statusLabel.config(text="")
          self.update_listbox_entry()
          self.update()
+<<<<<<< HEAD
          self.bar.stop()
          self.update()
-
+=======
+>>>>>>> refs/remotes/origin/dev_andy
 
       ## Refresh Button
       self.buttonVariable.set(" Record ")
@@ -200,6 +272,7 @@ class Recording_Window(Tkinter.Tk):
          self.playbackVariable.set("Playback")
          self.statusLabel.config(text="")
          self.update()
+<<<<<<< HEAD
    
    def progress_bar_updater(self):
       x = 0
@@ -242,3 +315,5 @@ class Recording_Window(Tkinter.Tk):
                                  variable = self.barVariable,
                                  style="red.Horizontal.TProgressbar")
       self.bar.grid(column=col, row=row, columnspan=2,pady=8)
+=======
+>>>>>>> refs/remotes/origin/dev_andy

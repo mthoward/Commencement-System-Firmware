@@ -1,0 +1,2 @@
+python -m pip install pyaudio
+python -m pip install wave

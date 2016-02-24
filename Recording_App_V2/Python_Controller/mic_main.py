@@ -1,4 +1,4 @@
-import sys
+import sys, subprocess
 from utils import *
 from List_Class import *
 from MicRecorder_Class import *
@@ -19,5 +19,5 @@ if __name__ == "__main__":
    window.list.addToList("adbooth")
     
    window.list.sortItems(0)
-
+   #subprocess.call("python -m pip list", shell=True)
    sys.exit(app.exec_())

@@ -11,11 +11,16 @@ RECORD_SECONDS = 3
 
 
 ## Record WAV file to UBIT_name.WAV
+<<<<<<< HEAD
 def record_wav_file(UBIT_name):  
    WAVE_OUTPUT_FILENAME = os.path.join(os.getcwd(), "../Recordings/" + str(UBIT_name) + ".wav")
    WAVE_OUTPUT_FILENAME = os.path.normpath(WAVE_OUTPUT_FILENAME)
    
+=======
+def record_wav_file(UBIT_name):
+   WAVE_OUTPUT_FILENAME = "../Recordings/"+str(UBIT_name) + ".wav"
 
+>>>>>>> refs/remotes/origin/dev_andy
    ## Create PyAudio Object
    p = pyaudio.PyAudio()
    stream = p.open(format=FORMAT,
@@ -42,15 +47,24 @@ def record_wav_file(UBIT_name):
    wf.setframerate(RATE)
    wf.writeframes(b''.join(frames))
    wf.close()
-
+<<<<<<< HEAD
       
    
 ## Play 'UBIT_name.WAV'
 def play_wav_file(file):
    ## Open Filename
-   filename = os.path.join(os.getcwd(), "../Recordings/" + str(file) + ".wav")
+   filename = os.path.join(os.getcwd(), "../Recordings/" + file)
    filename = os.path.normpath(filename)
+=======
 
+
+## Play 'UBIT_name.WAV'
+def play_wav_file(file):
+   ## Open Filename
+   filename = os.path.dirname(os.getcwd())
+   filename = filename  + "/Recordings/" + file
+   print filename
+>>>>>>> refs/remotes/origin/dev_andy
    wf = wave.open(filename, 'rb')
 
    ## Create PyAudio Object
