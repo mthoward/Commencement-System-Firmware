@@ -52,12 +52,12 @@ class RecordingWidget(QtGui.QWidget):
         self.buttonRec = QtGui.QPushButton()
         self.buttonRec.setText("REC")
         self.buttonRec.clicked.connect(self.beginRec)
-        self.buttonRec.setIcon(QtGui.QIcon(r"record_button.gif"))
+        self.buttonRec.setIcon(QtGui.QIcon(r"Pictures\record_button.gif"))
         self.buttonRec.setFixedWidth(70)
         self.buttonRec.setStyleSheet("background: rgb(250,102,102)")
         self.buttonPlay = QtGui.QPushButton()
         self.buttonPlay.setText("PLAY")
-        self.buttonPlay.setIcon(QtGui.QIcon(r"play_button.gif"))
+        self.buttonPlay.setIcon(QtGui.QIcon(r"Pictures\play_button.gif"))
         self.buttonPlay.setFixedWidth(70)
         self.buttonPlay.setStyleSheet("background: rgb(92,214,92)")
         self.buttonPlay.clicked.connect(self.playback)
@@ -135,7 +135,7 @@ class RecordingWidget(QtGui.QWidget):
     ####################################     
     def beginRec(self):
         self.showName.setStyleSheet("background: white; border: 1px solid; color: black")
-        if self.list.currentItem() is None:
+        if ((self.list.currentItem() is None) or (self.showName.text() == "Select From List")):
             self.showName.setStyleSheet("color: red")
             self.showName.setText("No Name Selected")
         else:      
@@ -191,7 +191,7 @@ class RecordingWidget(QtGui.QWidget):
     @QtCore.Slot(int)
     def timerTrigger(self,num):    
         self.recordingBool = num
-        self.list.currentItem().setIcon(QtGui.QIcon(r"check.png"))
+        self.list.currentItem().setIcon(QtGui.QIcon(r"Pictures\check.png"))
     
     
     

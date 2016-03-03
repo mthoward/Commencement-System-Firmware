@@ -13,6 +13,10 @@
     # return qr.data
 
 # #print decode_qr("mthoward.png")
+
+
+
+
 import os
 
 strpath = "/home/sethkara/"

@@ -9,9 +9,9 @@ class ListWidget(QtGui.QListWidget):
     def addToList(self, name):   
         ubit = QtGui.QListWidgetItem(name)
         if check_file_exists(str(name) + ".wav"):
-            ubit.setIcon(QtGui.QIcon(r"check.png"))
+            ubit.setIcon(QtGui.QIcon(r"Pictures\check.png"))
         else:
-            ubit.setIcon(QtGui.QIcon(r"x.png"))
+            ubit.setIcon(QtGui.QIcon(r"Pictures\x.png"))
         ubit.setFont(QtGui.QFont('Verdana', weight=4))
         self.addItem(ubit)
         self.sortItems(0)
