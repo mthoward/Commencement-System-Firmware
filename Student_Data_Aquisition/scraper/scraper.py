@@ -7,11 +7,12 @@ import os
 from time import sleep
 import json
 
+QUERY_URL = "http://www.buffalo.edu/directory/search?query=%s&affiliation=student&qualifier=general&perpage=%i&start=0"
 SLEEP_TIME = 2
 
 def getRequestDomTree(lastName, perPage=1):
     while True:
-        query = requests.get("http://www.buffalo.edu/directory/search?query=%s&affiliation=student&qualifier=general&perpage=%i&start=0" % (lastName, perPage))
+        query = requests.get(QUERY_URL % (lastName, perPage))
         queryTree = html.fromstring(query.content)
 
         if query.status_code != 200:
