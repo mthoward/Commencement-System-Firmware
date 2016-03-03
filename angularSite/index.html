@@ -1,0 +1,39 @@
+<!-- index.html -->
+    <!DOCTYPE html>
+    <html ng-app="recVerify">
+    <head>
+      <!-- SCROLLS -->
+      <!-- load bootstrap and fontawesome via CDN -->
+      <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+      <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
+
+      <!-- SPELLS -->
+      <!-- load angular and angular route via CDN -->
+      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
+      <script src="script.js"></script>
+    </head>
+
+    <body>
+
+      <div class="container pagination-centered">
+        <div class="page-header">
+            <h1>Hello, {{student.name}} </h1>
+            <p class="lead">this is our best attempt at saying your name</p>
+        </div>
+        <div class="row">
+            <form>
+                <input type="radio" name="choice" onclick="window.location='#/good';"/>  Sounds Good!
+                <input type="radio" name="choice" onclick="window.location='#/record';"/>  Let me say it
+                <input type="radio" name="choice" onclick="window.location='#/phonetics';"/>  Let me show the phonetics
+            </form>
+          </div>
+          <div ng-view>
+          </div>
+      </div>
+
+
+
+    </body>
+
+    </html>
