@@ -52,12 +52,12 @@ class RecordingWidget(QtGui.QWidget):
         self.buttonRec = QtGui.QPushButton()
         self.buttonRec.setText("REC")
         self.buttonRec.clicked.connect(self.beginRec)
-        self.buttonRec.setIcon(QtGui.QIcon(r"Pictures\record_button.gif"))
+        self.buttonRec.setIcon(QtGui.QIcon(r"Pictures/record_button.gif"))
         self.buttonRec.setFixedWidth(70)
         self.buttonRec.setStyleSheet("background: rgb(250,102,102)")
         self.buttonPlay = QtGui.QPushButton()
         self.buttonPlay.setText("PLAY")
-        self.buttonPlay.setIcon(QtGui.QIcon(r"Pictures\play_button.gif"))
+        self.buttonPlay.setIcon(QtGui.QIcon(r"Pictures/play_button.gif"))
         self.buttonPlay.setFixedWidth(70)
         self.buttonPlay.setStyleSheet("background: rgb(92,214,92)")
         self.buttonPlay.clicked.connect(self.playback)
@@ -96,7 +96,7 @@ class RecordingWidget(QtGui.QWidget):
         
         ### List Helpers
         self.searchButton = QtGui.QLabel()
-        self.searchButton.setPixmap(QtGui.QPixmap("mag_glass.png"))
+        self.searchButton.setPixmap(QtGui.QPixmap("Pictures/mag_glass.png"))
         QtCore.QObject.connect(self.searchButton, QtCore.SIGNAL('clicked()'), self.searchClicked)
         self.searchButton.mousePressEvent = self.searchClicked
         self.searchButton.setFixedWidth(40)
@@ -191,7 +191,7 @@ class RecordingWidget(QtGui.QWidget):
     @QtCore.Slot(int)
     def timerTrigger(self,num):    
         self.recordingBool = num
-        self.list.currentItem().setIcon(QtGui.QIcon(r"Pictures\check.png"))
+        self.list.currentItem().setIcon(QtGui.QIcon(r"Pictures/check.png"))
     
     
     
