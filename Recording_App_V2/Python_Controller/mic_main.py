@@ -1,4 +1,4 @@
-import sys, subprocess
+import sys, subprocess, time
 from utils import *
 from List_Class import *
 from MicRecorder_Class import *
@@ -7,11 +7,18 @@ from RecordingWidget_Class import *
 
 def populateList():
    ### Run scraper
-   proc = subprocess.Popen(['python', '../../Student_Data_Aquisition/scraper/scraper.py'], 
-                        stdout=subprocess.PIPE,
-                        )
-   while(proc.communicate()[0] != "Finished Scraping"):
-      break;
+   # origWD = os.getcwd() # remember our original working directory
+   # relPathToLaunch = '../../Student_Data_Aquisition/scraper'
+   # os.chdir(os.path.join(os.path.abspath(sys.path[0]), relPathToLaunch))
+   # proc = subprocess.Popen(['python','scraper.py'], #cwd='../../Student_Data_Aquisition/scraper/
+                        # stdout=subprocess.PIPE,
+                        # ) 
+   # os.chdir(origWD) # get back to our original working directory
+   
+   # timer = 0
+   # while(timer != 3):
+      # time.sleep(1)
+      # timer += 1
    ### Name Insertion Function
    return populate_from_JSON("../../Student_Data_Aquisition/scraper/UB_CEN_UBITs.json")
    

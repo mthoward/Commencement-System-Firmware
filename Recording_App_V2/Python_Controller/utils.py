@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 
 def create_subfolder(folderName):
    recordingsFolder = os.path.join(os.getcwd(), folderName)
@@ -47,5 +48,6 @@ def populate_from_JSON(filename):
                UBIT.append(ubit)
          except KeyError, e:
             print "-----ERROR----- > " + str(stu)
+   sys.stdout.flush()
    print "Finished Scraping"
    return UBIT      
