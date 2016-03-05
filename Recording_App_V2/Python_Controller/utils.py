@@ -47,4 +47,5 @@ def populate_from_JSON(filename):
                UBIT.append(ubit)
          except KeyError, e:
             print "-----ERROR----- > " + str(stu)
+   print "Finished Scraping"
    return UBIT      

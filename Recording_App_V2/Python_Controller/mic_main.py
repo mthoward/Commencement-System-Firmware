@@ -6,7 +6,12 @@ from RecordingWidget_Class import *
 
 
 def populateList():
-   #os.system("python ../../Student_Data_Aquisition/scraper/scraper.py")
+   ### Run scraper
+   proc = subprocess.Popen(['python', '../../Student_Data_Aquisition/scraper/scraper.py'], 
+                        stdout=subprocess.PIPE,
+                        )
+   while(proc.communicate()[0] != "Finished Scraping"):
+      break;
    ### Name Insertion Function
    return populate_from_JSON("../../Student_Data_Aquisition/scraper/UB_CEN_UBITs.json")
    
