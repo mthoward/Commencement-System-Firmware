@@ -143,10 +143,13 @@ class RecordingWidget(QtGui.QWidget):
             self.holdTrigger = TimerTrigger()
             self.recordingBool = 1
             self.thread2 = threading.Thread(target=self.progress_bar_updater)
+            self.thread2.daemon = True
             self.thread2.start()
             self.thread3 = threading.Thread(target=self.record_wav_file_wrapper)
+            self.thread3.daemon = True
             self.thread3.start()
             self.thread4 = threading.Thread(target=self.holdingTimer)
+            self.thread4.daemon = True
             self.thread4.start()
     
     def record_wav_file_wrapper(self):
@@ -158,10 +161,15 @@ class RecordingWidget(QtGui.QWidget):
     #   Control Timing
     ####################################        
     def playback(self):
-        self.playThread = threading.Thread(target=self.play_wav_file_wrapper)
-        self.playThread.start() 
+        if(self.showName.text() == "Select From List"):
+            self.showName.setStyleSheet("color: red")
+            self.showName.setText("No Name Selected")
+        else:
+            self.playThread = threading.Thread(target=self.play_wav_file_wrapper)
+            self.playThread.daemon = True
+            self.playThread.start() 
     
-    def play_wav_file_wrapper(self):
+    def play_wav_file_wrapper(self):  
         play_wav_file(self.showName.text())
 
 

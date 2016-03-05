@@ -4,6 +4,13 @@ from List_Class import *
 from MicRecorder_Class import *
 from RecordingWidget_Class import *
 
+
+def populateList():
+   #os.system("python ../../Student_Data_Aquisition/scraper/scraper.py")
+   ### Name Insertion Function
+   return populate_from_JSON("../../Student_Data_Aquisition/scraper/UB_CEN_UBITs.json")
+   
+
 '''#   ENTRY POINT   #'''
 if __name__ == "__main__":
    create_subfolder("../Recordings")
@@ -13,13 +20,8 @@ if __name__ == "__main__":
    window = RecordingWidget()
     
    ### Populate List
-   for x in range(0,5):
-      window.list.addToList("sethkara"+str(x+1))
-  
-   window.list.addToList("adbooth")
-   window.list.addToList("mthoward")
-   window.list.addToList("adbooth")
-   window.list.addToList("alimahmo")
-   window.list.addToList("davidtow")
+   UBITs = populateList()
+   for x in range(0,len(UBITs)):
+      window.list.addToList(UBITs[x])
    window.list.sortItems(0)
    sys.exit(app.exec_())

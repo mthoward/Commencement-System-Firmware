@@ -63,6 +63,7 @@ def play_wav_file(file):
 
    ## Play WAV File
    data = wf.readframes(CHUNK)
+   print data
    while data != '':
       stream.write(data)
       data = wf.readframes(CHUNK)
