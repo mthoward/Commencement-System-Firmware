@@ -16,11 +16,11 @@ Types of Messages:
 
 class UDP_Class():
    ### Home Testing - Lenovo
-   def __init__(self, other_Pi_IP = '192.168.1.6',
-                      other_Pi_Port = 15555,
-                      localIP = '192.168.1.151',
-                      localPort = 15556,
-                      socketTimeout = 100):
+   # def __init__(self, other_Pi_IP = '192.168.1.6',
+                      #other_Pi_Port = 15555,
+                      #localIP = '192.168.1.151',
+                      #localPort = 15556,
+                      #socketTimeout = 100):
    ### Home Testing - Server
    # def __init__(self, other_Pi_IP = '192.168.1.151',
                       # other_Pi_Port = 15556,
@@ -28,11 +28,11 @@ class UDP_Class():
                       # localPort = 15555,
                       # socketTimeout = 100):
    # ### Releaser Pi
-   # def __init__(self, other_Pi_IP = '169.254.199.241',
-                      # other_Pi_Port = 15556,
-                      # localIP = '169.254.104.90',
-                      # localPort = 15555,
-                      # socketTimeout = 100):
+   def __init__(self, other_Pi_IP = '169.254.199.241',
+                      other_Pi_Port = 15556,
+                      localIP = '169.254.104.90',
+                      localPort = 15555,
+                      socketTimeout = 100):
    # ### Scanner Pi
    # def __init__(self, other_Pi_IP = '169.254.104.90',
                       # other_Pi_Port = 15555,
