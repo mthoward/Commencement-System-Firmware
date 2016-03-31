@@ -51,6 +51,8 @@ class UDP_Class():
       self.STATUS_RESPONSE_MESS = int("1000",16)
       
       self.CONNECTION = 0
+      self.RECEIVED_BUFFER = ""
+      self.RECEIVED_UBIT = 0
     
       # Sets internal socket timeout
       self.socketTimeout = socketTimeout
@@ -145,11 +147,18 @@ class UDP_Class():
                         hex = format(payload[i], '04X')
                         message = message + (str(hex.decode("hex")))
                      print message
-                     self.sendMessage("Received", self.UBIT_RESPONSE_MESS)
+                     self.sendMessage("Received Successfully", self.UBIT_RESPONSE_MESS)
                   
                   '''UBIT_RESPONSE_MESS'''
                   if int((format(headerWords[7], '04X')),16) == self.UBIT_RESPONSE_MESS:  
-                     print "ok, I know you got that UBIT, I'll carry about my biz"
+                     self.RECEIVED_UBIT = 1
+                     payload = struct.unpack("!"+str(len(data)/2 - self.NUM_ALL_HEADER_WORDS)+"H", data[self.NUM_ALL_HEADER_WORDS*2:])
+                     message = ''
+                     for i in range(0,len(payload)):
+                        hex = format(payload[i], '04X')
+                        message = message + (str(hex.decode("hex")))
+                     self.RECEIVED_BUFFER = message
+                     print message
                   
                   '''STATUS_REQUEST_MESS'''
                   if int((format(headerWords[7], '04X')),16) == self.STATUS_REQUEST_MESS:
@@ -176,7 +185,17 @@ class UDP_Class():
                seconds = 0
                break;
          time.sleep(2)
-      
+   
+   def UBIT_Recieved_Confirmation(self, timeout):
+      seconds = 0
+      while(self.RECEIVED_UBIT == 0):
+         time.sleep(1.0)
+         seconds = seconds + 1
+         if(seconds>timeout):
+            print "Timeout Error"
+      time.sleep(2)
+
+   
    def listenForMessages(self):
       self.listenThread = threading.Thread(target=self.receiveMessage)
       self.listenThread.daemon = True
