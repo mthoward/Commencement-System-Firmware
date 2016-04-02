@@ -16,11 +16,11 @@ Types of Messages:
 
 class UDP_Class():
    ### Home Testing - Lenovo
-   # def __init__(self, other_Pi_IP = '192.168.1.6',
-                      #other_Pi_Port = 15555,
-                      #localIP = '192.168.1.151',
-                      #localPort = 15556,
-                      #socketTimeout = 100):
+   def __init__(self, other_Pi_IP = '192.168.1.6',
+                      other_Pi_Port = 15555,
+                      localIP = '192.168.1.151',
+                      localPort = 15556,
+                      socketTimeout = 100):
    ### Home Testing - Server
    # def __init__(self, other_Pi_IP = '192.168.1.151',
                       # other_Pi_Port = 15556,
@@ -28,11 +28,11 @@ class UDP_Class():
                       # localPort = 15555,
                       # socketTimeout = 100):
    # ### Releaser Pi
-   def __init__(self, other_Pi_IP = '169.254.199.241',
-                      other_Pi_Port = 15556,
-                      localIP = '169.254.104.90',
-                      localPort = 15555,
-                      socketTimeout = 100):
+   # def __init__(self, other_Pi_IP = '169.254.199.241',
+                      # other_Pi_Port = 15556,
+                      # localIP = '169.254.104.90',
+                      # localPort = 15555,
+                      # socketTimeout = 100):
    # ### Scanner Pi
    # def __init__(self, other_Pi_IP = '169.254.104.90',
                       # other_Pi_Port = 15555,
@@ -51,8 +51,11 @@ class UDP_Class():
       self.STATUS_RESPONSE_MESS = int("1000",16)
       
       self.CONNECTION = 0
-      self.RECEIVED_BUFFER = ""
-      self.RECEIVED_UBIT = 0
+      self.RCV_UBIT_FLAG = 0
+      self.RCV_UBIT_BUFFER = ""
+      self.UBIT_INCOMING_BUFFER = ""
+      self.RCV_UBIT_FLAG_LOCK = threading.Lock()
+      self.RCV_UBIT_BUFFER_LOCK = threading.Lock()
     
       # Sets internal socket timeout
       self.socketTimeout = socketTimeout
@@ -73,6 +76,7 @@ class UDP_Class():
       
       self.NUM_ALL_HEADER_WORDS = len(self.UB_HEADER)
 
+ 
    def connectUDPSockets(self):
       ##### Open my socket ####
       print "Opening UDP Socket..."
@@ -146,7 +150,13 @@ class UDP_Class():
                      for i in range(0,len(payload)):
                         hex = format(payload[i], '04X')
                         message = message + (str(hex.decode("hex")))
-                     print message
+                     #print "scanned ubit: ",message
+                     self.RCV_UBIT_FLAG_LOCK.acquire()
+                     self.RCV_UBIT_FLAG = 1
+                     self.RCV_UBIT_FLAG_LOCK.release()
+                     self.RCV_UBIT_BUFFER_LOCK.acquire()
+                     self.RCV_UBIT_BUFFER = message
+                     self.RCV_UBIT_BUFFER_LOCK.release()
                      self.sendMessage("Received Successfully", self.UBIT_RESPONSE_MESS)
                   
                   '''UBIT_RESPONSE_MESS'''
@@ -157,7 +167,6 @@ class UDP_Class():
                      for i in range(0,len(payload)):
                         hex = format(payload[i], '04X')
                         message = message + (str(hex.decode("hex")))
-                     self.RECEIVED_BUFFER = message
                      print message
                   
                   '''STATUS_REQUEST_MESS'''
@@ -170,7 +179,7 @@ class UDP_Class():
                      print "Connected"
              
          except:
-           print "listening..."
+           print "timeout or error..."
    
    def checkConnection(self):
       while(1):
