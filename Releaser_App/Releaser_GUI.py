@@ -385,7 +385,7 @@ class ReleaserGUI(QtGui.QWidget):
       entireHbox.addLayout(interfaceVBox)
       self.setLayout(entireHbox) 
       self.setGeometry(100, 100, 700, 400)
-      self.setWindowTitle('Recording App')   
+      self.setWindowTitle('Releasing App')   
       self.show()
    
    def initClock(self):
