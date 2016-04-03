@@ -176,7 +176,6 @@ class UDP_Class():
                   '''STATUS_RESPONSE_MESS'''
                   if int((format(headerWords[7], '04X')),16) == self.STATUS_RESPONSE_MESS:
                      self.CONNECTION = 1
-                     print "Connected"
              
          except:
            print "timeout or error..."

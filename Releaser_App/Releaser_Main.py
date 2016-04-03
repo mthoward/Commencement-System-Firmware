@@ -13,6 +13,7 @@ UDP_Manager.check_Connection()
 
    
 deque = Queue_Class()  
+
 def listenForUBIT():
    ## Delay to allow GUI to setup
    time.sleep(2)
@@ -27,9 +28,23 @@ def listenForUBIT():
          window.dequeWidget.addToQueue(UDP_Manager.RCV_UBIT_BUFFER)
          UDP_Manager.RCV_UBIT_BUFFER = ""        
          UDP_Manager.RCV_UBIT_BUFFER_LOCK.release()
-   
+
+def listenForConnection():
+   pass
+   time.sleep(1)
+   while(1):
+      time.sleep(0.9)
+      if UDP_Manager.CONNECTION == 1:
+         window.CONNECTED = True
+      else:
+         window.CONNECTED = False
+
+         
 '''#   ENTRY POINT   #'''
 if __name__ == "__main__":
+   listenThread = threading.Thread(target=listenForConnection)
+   listenThread.daemon = True
+   listenThread.start()
    listenThread = threading.Thread(target=listenForUBIT)
    listenThread.daemon = True
    listenThread.start()

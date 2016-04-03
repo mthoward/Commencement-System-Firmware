@@ -11,13 +11,40 @@ class ReleaserGUI(QtGui.QWidget):
       self.CURRENT_TIME = "0.0"
       self.RELEASE_TIME = "2.5"
       self.TIME_PAUSED = False
+      self.CONNECTED = False
+      
       self.initUI()       
-      #self.addTrigger = DequeTrigger()
+      self.initConnection()
       # connect slots
       self.connectSlots()
       self.initClock()
+    
+   def initConnection(self):
+      self.ConnectionTrigger = ConnTrigger()
+      self.Connectionthread = threading.Thread(target=self.connection_updater)
+      self.Connectionthread.daemon = True
+      self.Connectionthread.start()
       
+       ####################################
+    #   Thread to Update Progress Bar
+    ####################################
+   def connection_updater(self):
+      while(1):
+         if self.CONNECTED == True:
+            self.ConnectionTrigger.trigger.connect(self.receiveConnTrigger)
+            self.ConnectionTrigger.trigger.emit(1)
+            time.sleep(0.1) 
+         else:
+            self.ConnectionTrigger.trigger.connect(self.receiveConnTrigger)
+            self.ConnectionTrigger.trigger.emit(0)
+            time.sleep(0.1)
+         time.sleep(1)
+   
+   @QtCore.pyqtSlot(int)
+   def receiveConnTrigger(self,num):
+        self.connectionIcon.setText(str(num))
 
+        
    def initUI(self):
       ######################################################
       #  _______    ___________            _____________   #
@@ -331,6 +358,14 @@ class ReleaserGUI(QtGui.QWidget):
       Row3HBox.addWidget(self.handshake)
       interfaceVBox.addLayout(Row3HBox)
       
+      ### connection Icon      
+      self.connectionIcon = QtGui.QLabel()
+      #self.connectionIcon.setPixmap(QtGui.QPixmap("Pictures/handshake.png"))
+      self.connectionIcon.setFixedHeight(30)
+      self.connectionIcon.setFixedWidth(30)
+      self.connectionIcon.setAlignment(QtCore.Qt.AlignCenter)
+      Row4HBox.addWidget(self.connectionIcon)
+      interfaceVBox.addLayout(Row4HBox)
 
       '''Assemble Window'''
       entireHbox.addLayout(queueHbox)
@@ -352,36 +387,37 @@ class ReleaserGUI(QtGui.QWidget):
       self.FeetThread.start()
     
    def walkFeet(self):
-      self.footstep1.setText("  ")
-      time.sleep(0.2)
-      self.footstep1.setText(">>")
-      self.footstep2.setText("  ")
-      time.sleep(0.2)
-      self.footstep2.setText(">>")
-      self.footstep3.setText("  ")
-      time.sleep(0.2)
-      self.footstep3.setText(">>")
-      self.footstep4.setText("  ")
-      time.sleep(0.2)
-      self.footstep4.setText(">>")
-      self.footstep5.setText("  ")
-      time.sleep(0.2)
-      self.footstep5.setText(">>")
-      self.footstep6.setText("  ")
-      time.sleep(0.2)
-      self.footstep6.setText(">>")
-      self.footstep7.setText("  ")
-      time.sleep(0.2)
-      self.footstep7.setText(">>")
-      self.footstep8.setText("  ")
-      time.sleep(0.2)
-      self.footstep8.setText(">>")
-      self.footstep9.setText("  ")
-      time.sleep(0.2)
-      self.footstep9.setText(">>")
-      self.footstep10.setText("  ")
-      time.sleep(0.2)
-      self.footstep10.setText(">>")
+      pass
+      # self.footstep1.setText("  ")
+      # time.sleep(0.2)
+      # self.footstep1.setText(">>")
+      # self.footstep2.setText("  ")
+      # time.sleep(0.2)
+      # self.footstep2.setText(">>")
+      # self.footstep3.setText("  ")
+      # time.sleep(0.2)
+      # self.footstep3.setText(">>")
+      # self.footstep4.setText("  ")
+      # time.sleep(0.2)
+      # self.footstep4.setText(">>")
+      # self.footstep5.setText("  ")
+      # time.sleep(0.2)
+      # self.footstep5.setText(">>")
+      # self.footstep6.setText("  ")
+      # time.sleep(0.2)
+      # self.footstep6.setText(">>")
+      # self.footstep7.setText("  ")
+      # time.sleep(0.2)
+      # self.footstep7.setText(">>")
+      # self.footstep8.setText("  ")
+      # time.sleep(0.2)
+      # self.footstep8.setText(">>")
+      # self.footstep9.setText("  ")
+      # time.sleep(0.2)
+      # self.footstep9.setText(">>")
+      # self.footstep10.setText("  ")
+      # time.sleep(0.2)
+      # self.footstep10.setText(">>")
 
      
      
@@ -500,7 +536,8 @@ class ReleaserGUI(QtGui.QWidget):
       self.CURRENT_TIME = "0.0"
       self.START_TIME_LOCK.release()
       
-       
+      
+   
    
    def connectSlots(self):
       pass
@@ -508,5 +545,5 @@ class ReleaserGUI(QtGui.QWidget):
 class DequeTrigger(QtCore.QObject):
    trigger = QtCore.pyqtSignal(str)
 
-class TimeTrigger(QtCore.QObject):
+class ConnTrigger(QtCore.QObject):
     trigger = QtCore.pyqtSignal(int)
