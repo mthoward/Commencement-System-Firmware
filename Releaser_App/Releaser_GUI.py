@@ -42,7 +42,11 @@ class ReleaserGUI(QtGui.QWidget):
    
    @QtCore.pyqtSlot(int)
    def receiveConnTrigger(self,num):
-        self.connectionIcon.setText(str(num))
+      if num == 1:
+         self.connectionIcon.setPixmap(QtGui.QPixmap("Pictures/green_dot.png"))
+      else:
+         self.connectionIcon.setPixmap(QtGui.QPixmap("Pictures/red_dot.png"))
+        #self.connectionIcon.setText(str(num))
 
         
    def initUI(self):
@@ -358,11 +362,20 @@ class ReleaserGUI(QtGui.QWidget):
       Row3HBox.addWidget(self.handshake)
       interfaceVBox.addLayout(Row3HBox)
       
+      
+      '''ROW 4'''
+      self.connectionIcon = QtGui.QLabel("Connection Status: ")
+      self.connectionIcon.setFixedHeight(25)
+      qf = QtGui.QFont("Verdana", 12)
+      self.connectionIcon.setFont(qf)
+      #self.connectionIcon.setFixedWidth(25)
+      self.connectionIcon.setAlignment(QtCore.Qt.AlignRight)
+      Row4HBox.addWidget(self.connectionIcon)
+      
       ### connection Icon      
       self.connectionIcon = QtGui.QLabel()
-      #self.connectionIcon.setPixmap(QtGui.QPixmap("Pictures/handshake.png"))
-      self.connectionIcon.setFixedHeight(30)
-      self.connectionIcon.setFixedWidth(30)
+      self.connectionIcon.setFixedHeight(25)
+      self.connectionIcon.setFixedWidth(25)
       self.connectionIcon.setAlignment(QtCore.Qt.AlignCenter)
       Row4HBox.addWidget(self.connectionIcon)
       interfaceVBox.addLayout(Row4HBox)
@@ -467,7 +480,6 @@ class ReleaserGUI(QtGui.QWidget):
       self.autoSelected.setText("Automatic Mode Selected")
 
    
-   
    def AutomaticRelease(self):
       self.CURRENT_TIME_LOCK= threading.Lock()
       while(1):
@@ -518,6 +530,7 @@ class ReleaserGUI(QtGui.QWidget):
       self.Release.setText(time)
       self.RELEASE_TIME_LOCK.release()
    
+   
    def stopButtonClicked(self):
       self.STOP_TIME_LOCK = threading.Lock()
       self.STOP_TIME_LOCK.acquire()
@@ -536,9 +549,7 @@ class ReleaserGUI(QtGui.QWidget):
       self.CURRENT_TIME = "0.0"
       self.START_TIME_LOCK.release()
       
-      
-   
-   
+     
    def connectSlots(self):
       pass
 
