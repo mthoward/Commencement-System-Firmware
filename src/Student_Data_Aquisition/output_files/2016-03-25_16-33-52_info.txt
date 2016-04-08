@@ -1,0 +1,17 @@
+Elapsed time: 243.100257874
+
+Students not found:
+    Ashaab Alam
+    Keith E Baran
+    Satyam Mehta
+    Robert M Szymanski
+    Chern Y Chua
+    Daniel Lee Fischer
+    John Joseph Kuhn III
+    Arunan Bala Krishnan
+    Yi Chen
+    Korben Michael Rome Grover
+    Zhen Rong Huang
+    James Andre Lacour
+    Bao Xu
+    Ledong Yang
