@@ -11,7 +11,7 @@ class Db_Class():
       db = MySQLdb.connect(self.DB_HOST, self.DB_USER, self.DB_PASSWD, self.DB_NAME)
       cursor = db.cursor()
       try:
-         cursor.execute("""INSERT INTO students (ubit, file_path) VALUES (%s,%s)""",(data['ubit'],data['file_path']))
+         cursor.execute("""INSERT INTO students (ubit, name) VALUES (%s,%s)""",(data['ubit'],data['name']))
          db.commit()
          print "Insertion Successful"
       except:
@@ -23,7 +23,7 @@ class Db_Class():
    def get(self, data):
       db = MySQLdb.connect(self.DB_HOST, self.DB_USER, self.DB_PASSWD, self.DB_NAME)
       cursor = db.cursor()
-      cursor.execute("""SELECT ubit, file_path FROM students WHERE ubit = %s;""", data['ubit'])
+      cursor.execute("""SELECT ubit, name FROM students WHERE ubit = %s;""", data['ubit'])
       result = cursor.fetchone()
       if result == None:
          print("ERROR: NOT ENTRY FOR",data['ubit'])
@@ -44,7 +44,7 @@ class Db_Class():
           "CREATE TABLE `students` ("
           "  `unique_id` int(11) NOT NULL AUTO_INCREMENT,"
           "  `ubit` varchar(16) NOT NULL UNIQUE,"
-          "  `file_path` varchar(200) NOT NULL,"
+          "  `name` varchar(200) NOT NULL,"
           "  PRIMARY KEY (`unique_id`)"
           ") ENGINE=InnoDB")
 

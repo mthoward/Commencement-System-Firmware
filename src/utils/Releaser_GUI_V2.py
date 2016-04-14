@@ -3,9 +3,9 @@ from Deque_Widget_Class import *
 import time, threading, os, sys
 from Queue_Class import Queue_Class 
 import sound_interface
-from Db_Class import Db_Class
+#from Db_Class import Db_Class
 
-dbm = Db_Class()
+#dbm = Db_Class()
 
 class ReleaserGUI2(QtGui.QWidget):
    def __init__(self):
@@ -54,17 +54,17 @@ class ReleaserGUI2(QtGui.QWidget):
       '''Assemble Window'''
       entireHbox.addLayout(queueHbox)
       entireHbox.addLayout(interfaceVBox)
-      self.setLayout(entireHbox) 
+      self.setLayout(entireHbox)
       self.setGeometry(100, 100, 300, 400)
-      self.setWindowTitle('Releasing App')   
+      self.setWindowTitle('Releasing App')
       self.show()
 
 
    def ManualReleaseClicked(self):
       try:
-         wavpath = self.deque.removeFromTopOfQueue()
-         ubit = self.dequeWidget.pop().text()
+         ubit = self.deque.removeFromTopOfQueue()
+         self.dequeWidget.pop().text()
       except KeyError:
          return
       #sound_interface.play_wav_file(wavpath)
-      os.system('aplay %s' % wavpath)
+      os.system('aplay ../../res/namewavs/%s.wav' % ubit)

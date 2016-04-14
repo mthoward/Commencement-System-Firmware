@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import sys, time, threading
+import sys, time, threading, json
 from utils.Deque_Widget_Class import *
 from utils.Releaser_GUI_V2 import *
 from utils.Queue_Class import *
@@ -16,30 +16,47 @@ def listenForUBIT():
 	 ubit = UDP_Manager.RCV_UBIT_BUFFER
 	 UDP_Manager.RCV_UBIT_BUFFER = ""
 	 UDP_Manager.RCV_UBIT_FLAG_LOCK.release()
+	 
+	 if ubit not in studentDict:
+	     UDP_Manager.sendMessage("Not Found", UDP_Manager.UBIT_RESPONSE_MESS)
+	     # TODO handle this error better
+	 else:
+	     UDP_Manager.sendMessage("Received Successfully", UDP_Manager.UBIT_RESPONSE_MESS)
+
+	 if ubit not in ubitSet:
+	     ubitSet.add(ubit)
+	     window.dequeWidget.addToQueue(ubit)
+	     window.deque.addToBottomOfQueue(ubit)
+	 
 
 	 # Get wavpath from db and add to queue
-	 try:
-	    student = dbm.get({'ubit': ubit})
+	 #try:
+	    #student = dbm.get({'ubit': ubit})
 	    #print "Listener found:", ubit
 
-	    if ubit not in ubitSet:
-	        ubitSet.add(ubit)
-		window.dequeWidget.addToQueue(student[0])
-	        window.deque.addToBottomOfQueue(student[1])
+	    #if ubit not in ubitSet:
+	        #ubitSet.add(ubit)
+		#window.dequeWidget.addToQueue(student[0])
+	        #window.deque.addToBottomOfQueue(student[1])
 	    #print window.deque.deque
-	    UDP_Manager.sendMessage("Received Successfully", UDP_Manager.UBIT_RESPONSE_MESS)
-	 except Exception as e:
- 	    print e
-	    print "Not Found"
-	    UDP_Manager.sendMessage("Not Found", UDP_Manager.UBIT_RESPONSE_MESS)    
+	    #UDP_Manager.sendMessage("Received Successfully", UDP_Manager.UBIT_RESPONSE_MESS)
+	 #except Exception as e:
+ 	    #print e
+	    #print "Not Found"
+	    #UDP_Manager.sendMessage("Not Found", UDP_Manager.UBIT_RESPONSE_MESS)    
 	 
 	 
 '''#   ENTRY POINT   #'''
 if __name__ == "__main__":
+    # Start contact with scanner
     UDP_Manager = UDP_Class()
     UDP_Manager.listenForMessages()
-     
+    
+    # Make set to avoid repeats
     ubitSet = set()
+    
+    # Look at JSON file to detect existence
+    studentDict = json.load(open('utils/most_eligible_CEN.json'))
 
     listenThread = threading.Thread(target=listenForUBIT)
     listenThread.daemon = True
