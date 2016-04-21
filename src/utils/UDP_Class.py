@@ -1,17 +1,21 @@
 import socket
 import time
 import struct
-import threading
+from multiprocessing import Process, Lock
 import binascii
 '''
 sudo iptables -A INPUT -p udp --dport 15555 -j ACCEPT
 sudo iptables -A INPUT -p udp --dport 15556 -j ACCEPT
 
 Types of Messages:
-   scanner to releaser - UBIT             <= MESS_ID = 0x0001
-   releaser to scanner = acknowledgement  <= MESS_ID = 0x0010
-   both - still connected?                <= MESS_ID = 0x0100
-   both - response                        <= MESS_ID = 0x1000
+   UBIT_LOOKUP
+      Ask if UBIT Exists      (Scanner to Releaser)     <= MESS_ID = 0x0001
+      Respond if UBIT Exists  (Scanner to Releaser)     <= MESS_ID = 0x0002
+         Yes                                            <= MESS_HDR1 = 0x0001
+         No                                             <= MESS_HDR1 = 0x0000
+   Laser Broken            (Releaser to Scanner)        <= MESS_ID = 0x8000
+   Ask if Connected        (two-way)                    <= MESS_ID = 0x0100
+   Respond if Connected    (two-way)                    <= MESS_ID = 0x0200
 '''
 
 class UDP_Class():
@@ -45,19 +49,26 @@ class UDP_Class():
       self.LOCAL_IP_ADDRESS = localIP
       self.LOCAL_PORT = localPort
     
-      self.UBIT_SCANNED_MESS    = int("0001",16)
-      self.UBIT_RESPONSE_MESS   = int("0010",16)
-      self.STATUS_REQUEST_MESS  = int("0100",16)
-      self.STATUS_RESPONSE_MESS = int("1000",16)
+      # MESSAGE CONSTANTS
+      self.ASK_UBIT_MESS_ID         = int("0001",16)
+      self.RESP_UBIT_MESS_ID        = int("0002",16)
+      self.RESP_UBIT_HDR1_YES       = int("0001",16)
+      self.RESP_UBIT_HDR1_NO        = int("0000",16)
       
+      self.LASER_BROKEN_MESS_ID     = int("8000",16)
+      
+      self.ASK_COMMS_UP_MESS_ID     = int("0100",16)
+      self.RESP_COMMS_UP_MESS_ID    = int("0200",16)
+      
+      # Message specific buffers and flags
       self.CONNECTION = 0
       self.RCV_UBIT_FLAG = 0
       self.RCV_UBIT_BUFFER = ""
       self.RECEIVED_UBIT = 0
       self.RECEIVED_UBIT_BUFFER = ""
       self.UBIT_INCOMING_BUFFER = ""
-      self.RCV_UBIT_FLAG_LOCK = threading.Lock()
-      self.RCV_UBIT_BUFFER_LOCK = threading.Lock()
+      #self.RCV_UBIT_FLAG_LOCK = threading.Lock()
+      #self.RCV_UBIT_BUFFER_LOCK = threading.Lock()
     
       # Sets internal socket timeout
       self.socketTimeout = socketTimeout
@@ -72,7 +83,7 @@ class UDP_Class():
                         int("FEED", 16), 
                         int("BEEF", 16),
                         int("ABCD", 16),
-                        int("0000", 16),
+                        int("0001", 16),
                         int("0000", 16),
                         int("0000", 16)]
       
@@ -128,10 +139,12 @@ class UDP_Class():
       return packedString
    
    ### Send a payload 
-   def sendMessage(self, payload, messageType):
+   def sendMessage(self, payload='', MESS_ID=int("0000",16), MESS_HDR1=int("0000",16), MESS_HDR2=int("0000",16)):
       int_payload = self.convertAsciiToInt(payload)
       totalMessage = self.addHeader(int_payload)                                                # Add Header
-      totalMessage[7] = messageType
+      totalMessage[5] = MESS_ID
+      totalMessage[6] = MESS_HDR1
+      totalMessage[7] = MESS_HDR2
       packagedMessage = self.packageUpMessage(totalMessage)                                     # Create unsigned short array
       self.mainSocket.sendto(packagedMessage, (self.OTHER_PI_IP_ADDRESS, self.OTHER_PI_PORT))   # Send
      
@@ -145,37 +158,43 @@ class UDP_Class():
                headerWords = struct.unpack("!"+str(self.NUM_ALL_HEADER_WORDS)+"H", data[0:self.NUM_ALL_HEADER_WORDS*2])	 
                # Check an ethernet header word
                if (format(headerWords[0], '04X') == format(self.UB_HEADER[0], '04X')):
-                  '''UBIT_SCANNED_MESS'''
-                  if int((format(headerWords[7], '04X')),16) == self.UBIT_SCANNED_MESS:
+                  '''ASK_UBIT_MESS_ID'''
+                  if int((format(headerWords[5], '04X')),16) == self.ASK_UBIT_MESS_ID:
                      payload = struct.unpack("!"+str(len(data)/2 - self.NUM_ALL_HEADER_WORDS)+"H", data[self.NUM_ALL_HEADER_WORDS*2:])
-                     message = ''
+                     ubit = ''
                      for i in range(0,len(payload)):
                         hex = format(payload[i], '04X')
-                        message = message + (str(hex.decode("hex")))
+                        ubit = ubit + (str(hex.decode("hex")))
                      self.RCV_UBIT_FLAG_LOCK.acquire()
                      self.RCV_UBIT_FLAG = 1
                      self.RCV_UBIT_BUFFER = message
                      self.RCV_UBIT_FLAG_LOCK.release()
+                     ###TODO
+                     #Look up if name exists
+                  
                   
                   '''UBIT_RESPONSE_MESS'''
-                  if int((format(headerWords[7], '04X')),16) == self.UBIT_RESPONSE_MESS:  
-                     self.RECEIVED_UBIT = 1
-                     payload = struct.unpack("!"+str(len(data)/2 - self.NUM_ALL_HEADER_WORDS)+"H", data[self.NUM_ALL_HEADER_WORDS*2:])
-                     message = ''
-                     for i in range(0,len(payload)):
-                        hex = format(payload[i], '04X')
-                        message = message + (str(hex.decode("hex")))
-		     self.RECEIVED_UBIT_BUFFER = message
-                     print message
+                  if int((format(headerWords[5], '04X')),16) == self.UBIT_RESPONSE_MESS:  
+                     if int((format(headerWords[5], '04X')),16) == self.RESP_UBIT_HDR1_YES:
+                        # Confirm yes
+                        print yes
+                     if int((format(headerWords[5], '04X')),16) == self.RESP_UBIT_HDR1_NO:
+                        # Confirm No
+                        print no
                   
-                  '''STATUS_REQUEST_MESS'''
-                  if int((format(headerWords[7], '04X')),16) == self.STATUS_REQUEST_MESS:
-                     self.sendMessage("I'm Alive...", self.STATUS_RESPONSE_MESS)
+                  '''ASK_COMMS_UP_MESS_ID'''
+                  if int((format(headerWords[5], '04X')),16) == self.ASK_COMMS_UP_MESS_ID:
+                     self.sendMessage("I'm Alive", self.RESP_COMMS_UP_MESS_ID)
                   
-                  '''STATUS_RESPONSE_MESS'''
-                  if int((format(headerWords[7], '04X')),16) == self.STATUS_RESPONSE_MESS:
+                  '''RESP_COMMS_UP_MESS_ID'''
+                  if int((format(headerWords[5], '04X')),16) == self.RESP_COMMS_UP_MESS_ID:
                      self.CONNECTION = 1
              
+                  '''RESP_COMMS_UP_MESS_ID'''
+                  if int((format(headerWords[5], '04X')),16) == self.RESP_COMMS_UP_MESS_ID:
+                     self.CONNECTION = 1
+                     
+                     
          except Exception as e:
 	   print e.message
 	   print e
