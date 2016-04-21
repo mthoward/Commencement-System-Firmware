@@ -11,9 +11,3 @@ def decode_qr(filename):
     qr = qrtools.QR()
     qr.decode(filename)
     return qr.data
-
-#encode_qr("mthoward")
-#print (decode_qr("mthoward.png"))
-
-
-
