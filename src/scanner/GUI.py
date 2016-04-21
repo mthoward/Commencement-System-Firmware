@@ -13,14 +13,14 @@ class GUI(Frame):
     def createWidgets(self):
         self.connectedLabel = Label(self)
         self.connectedLabel['text'] = 'Not connected'
+        self.connectedLabel.pack({'side': 'top'})
 
-        self.QUIT = Button(self)
-        self.QUIT['text'] = 'Quit'
-        self.QUIT['command'] =  self.quit
-        self.QUIT.pack({'side': 'bottom'})
+        self.
 
-    def say_hi(self):
-        print "hi there, everyone!"
+        self.quitButton = Button(self)
+        self.quitButton['text'] = 'Quit'
+        self.quitButton['command'] =  self.quit
+        self.quitButton.pack({'side': 'bottom'})
 
 root = Tk()
 app = GUI(master=root)
