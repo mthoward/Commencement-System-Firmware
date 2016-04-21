@@ -174,7 +174,6 @@ class UDP_Class():
                      self.lock.acquire()
                      self.RCV_UBIT_FLAG = 1
                      self.RCV_UBIT_BUFFER = ubit
-                     print ubit
                      self.lock.release()
                      self.sendMessage(payload="Yes", MESS_ID=self.RESP_UBIT_MESS_ID, MESS_HDR1=self.RESP_UBIT_HDR1_YES)
                      
@@ -185,10 +184,8 @@ class UDP_Class():
                      self.lock.release()
                      if int((format(headerWords[6], '04X')),16) == self.RESP_UBIT_HDR1_YES:
                         self.ASK_UBIT_ANSWER = 1
-                        print "Exists"
                      if int((format(headerWords[6], '04X')),16) == self.RESP_UBIT_HDR1_NO:
                         self.ASK_UBIT_ANSWER = 0
-                        print "Doesn't Exist"
                   
                   '''ASK_COMMS_UP_MESS_ID'''
                   if int((format(headerWords[5], '04X')),16) == self.ASK_COMMS_UP_MESS_ID:
@@ -250,9 +247,7 @@ class UDP_Class():
 udp = UDP_Class()
 udp.listenForMessages()
 udp.check_Connection()
-x=0
 while(1):
-   time.sleep(0.1)
-   udp.sendMessage("test"+str(x), MESS_ID=udp.ASK_UBIT_MESS_ID)
-   x += 1
+   time.sleep(2)
+   #udp.sendMessage("test", MESS_ID=udp.ASK_UBIT_MESS_ID)
    
