@@ -3,3 +3,7 @@ Starts scanner software
 """
 
 print 'Scanner software starting...'
+
+while True:
+    pass
+    break
