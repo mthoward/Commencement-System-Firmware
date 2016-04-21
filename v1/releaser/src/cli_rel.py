@@ -3,13 +3,13 @@ import threading
 import os
 from collections import OrderedDict
 
-from Database_Handler import Db_Class
-from Ethernet_Handler import UDP_Class
-from Queue_Handler import Queue_Class
+#from Database_Handler import Db_Class
+from utils.UDP_Class import UDP_Class
+from utils.Queue_Class import Queue_Class
 
-udpm = UDP_Class.UDP_Class()
-queue = Queue_Class.Queue_Class()
-dbm = Db_Class.Db_Class()
+udpm = UDP_Class()
+queue = Queue_Class()
+#dbm = Db_Class.Db_Class()
 
 def listenForMessage():
     print 'Listen for message running'
@@ -29,10 +29,10 @@ def listenForMessage():
     	    udpm.RCV_UBIT_BUFFER_LOCK.release()
     	    
     	    # Put data in queue
-    	    student = dbm.get({'ubit': ubit})
+    	    #student = dbm.get({'ubit': ubit})
     	    try:
-    	        print 'Student added: %s' % student[0]
-    	        wavpath = student[1]
+    	        print 'Ubit added: %s' % ubit
+    	        wavpath = '../res/namewavs/%s.wav' % ubit
     	        queue.addToBottomOfQueue(wavpath)
     	    except TypeError:
     	    	# TODO this is where our contingency plan must go into action
@@ -48,7 +48,6 @@ receiveThread.daemon = True
 receiveThread.start()
 print 'Threads started'
 
-listenForMessage()
     
 while(True):
     raw_input('Waiting for user input...:')

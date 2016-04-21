@@ -2,7 +2,7 @@ from PyQt4 import QtGui, QtCore
 from Deque_Widget_Class import *
 import time, threading, os, sys
 from Queue_Class import Queue_Class 
-import sound_interface
+#import sound_interface
 #from Db_Class import Db_Class
 
 #dbm = Db_Class()
@@ -10,16 +10,9 @@ import sound_interface
 class ReleaserGUI2(QtGui.QWidget):
    def __init__(self):
       QtGui.QWidget.__init__(self)
-      self.deque = Queue_Class()
-      self.initUI()       
-
-    
-   def initConnection(self):
-      self.ConnectionTrigger = ConnTrigger()
-      self.Connectionthread = threading.Thread(target=self.connection_updater)
-      self.Connectionthread.daemon = True
-      self.Connectionthread.start()
-      
+      #self.deque = Queue_Class()
+      self.initUI()          
+ 
         
    def initUI(self):
       entireHbox      = QtGui.QHBoxLayout()
@@ -62,8 +55,8 @@ class ReleaserGUI2(QtGui.QWidget):
 
    def ManualReleaseClicked(self):
       try:
-         ubit = self.deque.removeFromTopOfQueue()
-         self.dequeWidget.pop().text()
+         self.deque.removeFromTopOfQueue()
+         ubit = self.dequeWidget.pop().text()
       except KeyError:
          return
       #sound_interface.play_wav_file(wavpath)
