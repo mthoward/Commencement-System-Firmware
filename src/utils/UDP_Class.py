@@ -247,12 +247,12 @@ class UDP_Class():
 
       
 #Debug      
-udp = UDP_Class()
-udp.listenForMessages()
-udp.check_Connection()
-x=0
-while(1):
-   time.sleep(0.1)
-   udp.sendMessage("test"+str(x), MESS_ID=udp.ASK_UBIT_MESS_ID)
-   x += 1
+#udp = UDP_Class()
+#udp.listenForMessages()
+#udp.check_Connection()
+#x=0
+#while(1):
+   #time.sleep(0.1)
+   #udp.sendMessage("test"+str(x), MESS_ID=udp.ASK_UBIT_MESS_ID)
+   #x += 1
    
