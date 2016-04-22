@@ -15,8 +15,6 @@ class GUI(Frame):
         self.connectedLabel['text'] = 'Not connected'
         self.connectedLabel.pack({'side': 'top'})
 
-        self.
-
         self.quitButton = Button(self)
         self.quitButton['text'] = 'Quit'
         self.quitButton['command'] =  self.quit

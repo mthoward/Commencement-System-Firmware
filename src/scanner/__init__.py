@@ -5,10 +5,10 @@ Starts scanner software
 # Standard imports
 import threading
 # Package imports
-# from picamera import PiCamera
+from picamera import PiCamera
 # Local imports
 from utils.UDP_Class import UDP_Class
-# from qr import qrencode, qrdecode
+from qr import qrencode, qrdecode
 from Student import Student
 from Squeue import Queue
 
